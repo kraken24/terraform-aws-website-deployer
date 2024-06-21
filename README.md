@@ -1,10 +1,10 @@
-**Deploy your personal website in 5 mins for just €20**
+**Deploy your personal website in 5 mins for just €20 / year**
 =============================
 
 ## Goal
 
 This repository deploys a secure website on AWS using Terraform and GitHub Actions. And the best part, it costs less than €20 per year.
-v
+
 ## Requirements
 
 The following variable values need to be set in your github repository secrets:
@@ -20,6 +20,9 @@ The following variable values need to be set in your github repository secrets:
 * `AWS_ACCESS_KEY_ID` : The access key for your IAM User.
 * `AWS_SECRET_ACCESS_KEY` : The secret access key for your IAM User.
 * `AWS_REGION` : The default AWS region. I would recommend it to be same as the region where you create your bucket for storing website files.
+
+## Architecture
+![alt text](images/website_architecture.png)
 
 ## Limitations
 
