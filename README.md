@@ -1,34 +1,15 @@
-**Deploy your personal website in 5 mins for just €20 / year**
+**Deploy your personal website on AWS in 5 mins for just €20 / year**
 =============================
 
-## Goal
+## Introduction
 
-This repository deploys a secure website on AWS using Terraform and GitHub Actions. And the best part, it costs less than €20 per year.
-
-## Requirements
-
-The following variable values need to be set in your github repository secrets:
-* `TF_VERSION` : The version of terraform to be used. I am using 1.8.5
-* `BACKEND_BUCKET_NAME` : The name of AWS S3 bucket to store terraform backend
-* `BACKEND_BUCKET_REGION` : The AWS region where the bucket for terraform backend is created
-* `AWS_ACM_REGION` : The AWS region to provision SSL Certificates. This region should always be **us-east-1**
-* `DOMAIN_BUCKET_NAME` : The name of AWS S3 bucket to store your website files. I would recommend to keep it same as your domain name.
-* `DOMAIN_BUCKET_REGION` : The AWS region where the domain bucket should be created. 
-* `ROUTE53_DOMAIN_NAME` : The domain name you purchased for your website.
-* `ROUTE53_HOSTED_ZONE_ID` : The hosted zone id created by route 53 for your domain.
-* `ROUTE53_RECORD_TTL` : The time-to-life (TTL) for your website files. 
-* `AWS_ACCESS_KEY_ID` : The access key for your IAM User.
-* `AWS_SECRET_ACCESS_KEY` : The secret access key for your IAM User.
-* `AWS_REGION` : The default AWS region. I would recommend it to be same as the region where you create your bucket for storing website files.
+This repository provide a template to deploy an website on AWS in the most cost-effective and simple manner. Additionally, you have an opportunity to learn about Terraform & Infrastructure-as-Code, working with Github Actions, and how to deploy a website on AWS. Surprisingly, it costs as little as €20 / year to maintain your website.
 
 ## Architecture
+
+Here is the architecture diagram of the website deployment: 
+
 ![alt text](images/website_architecture.png)
-
-## Limitations
-
-1. The User has to take some trouble to setup AWS and GitHub accounts. I have included the steps below.
-2. Currently the pipeline only supports domains hosted in route 53. If your domain is hosted somewhere else like in Squarespace or Azure, then you have to make necessary changes to the terraform deployment files.
-3. The pipeline only supports AWS deployment. I will setup Azure & GCP deployment pipelines at a later stage.
 
 ## Cost Break-Up
 
@@ -48,16 +29,16 @@ There are two types of costs involved in this project:
 | Certificate Manager   | € 0.00            | SSL Certificate for the website                    |
 | **Total**             | **€ 18.20**       | **Total cost per year**                            |
 
-
 ## Pre-Requisites
 
 This repository has four parts. I have explained each part below, so feel free to skip to whichever part you don't know about.
 * ☁️ AWS Account Setup: An AWS account to deploy your website.
-* 🐙 GitHub Account Setup: A GitHub account to store your website files and maintain a history of changes.
-* 🛠️ Terraform configuration in `terraform` folder: This is the main configuration file for deploying the website on AWS. You do not have to change anything here as long as the secrets are stored properly on GitHub :)
-* 🌐 Website files in `my_website` folder: Store all the required website files in this folder.
+* 🐙 GitHub Account Setup: A GitHub account to maintain all the files for this project.
+* 🎬 Deployments via Github Actions: There are two pipelines (infrastructure deployment and website deployment) which will automatically deploy everything for you.
+    * 🛠️ Terraform configuration in `terraform` folder: This folder contains the AWS infrastructure configuration files. You do not have to change anything here as long as the secrets are stored properly on GitHub :)
+    * 🌐 Website files in `my_website` folder: Stores all the required website files in this folder.
 
-#### AWS Setup
+### AWS Setup
 
 1. Create a AWS Account and an IAM User to deploy the cloud infrastructure. Link to create an IAM User can be found [here](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html).
 2. For your IAM User, generate access key and secret access key. **Save them in a safe place.**
@@ -74,11 +55,10 @@ This repository has four parts. I have explained each part below, so feel free t
     ![alt text](images/image-3.png)
     3. Enable bucket versioning and create the bucket.
 
-#### GitHub Setup
+### GitHub Setup
 
-1. Create a GitHub account to store the website files.
+1. Create a GitHub account to maintain all the files for this project.
 2. Fork this [Repository](https://github.com/kraken24/personal-website-with-terraform) from GitHub and clone it locally.
-
 3. In the settings tab, go to `Secrets and variables` tab, click on `Actions` and add secrets.
 ![alt text](images/image-5.png)
 4. Add secret `Name`: `Secret`value as follows:
@@ -98,14 +78,30 @@ This repository has four parts. I have explained each part below, so feel free t
 | `AWS_SECRET_ACCESS_KEY`    | secret-access-key            | The secret access key for your IAM User.                      |
 | `AWS_REGION`               | eu-central-1                 | The default AWS region. I would recommend it to be same as the region where you create your bucket for storing website files.  |
 
+### Deployments
+
+1. `.github/workflows` folder contains two automation pipelines.
+2. The `deploy_infra.yml` pipeline will setup the required AWS infrastructure (creating S3 bucket, CloudFront distributions etc.).
+    1. The pipeline will be triggered whenever the files are changed in `terraform` folder and the changes are pushed to `main` branch. See the trigger [lines 3-8](https://github.com/kraken24/terraform-aws-website-deployer/blob/ed6148bd07a7114332195eb6e6295ac70aec661b/.github/workflows/deploy_infra.yml#L3C1-L8C23).
+3. The `upload_to_s3.yml` pipeline will copy your website files to AWS S3 bucket which will be used to render your website.
+    1. The pipeline will be triggered whenever files are changed in `my_website` folder and the changes are pushed to `main` branch. See the trigger [lines 3-8](https://github.com/kraken24/terraform-aws-website-deployer/blob/ed6148bd07a7114332195eb6e6295ac70aec661b/.github/workflows/upload_to_s3.yml#L3C1-L8C23).
+4. See below the changes you have to make to trigger the pipelines.
+
+#### Terraform Files
+
+1. Create a branch from `main` and name it `feature/terraform_deployment`.
+2. Create a dummy text file in `terraform` folder called `terraform_deployment.txt`
+3. Commit the file and merge to main. This will trigger the pipeline to setup the AWS infrastructure.
+4. ⚠️ **This step is necessary as the automation pipeline and terraform requires a few minutes to deploy everything on AWS. If this step is combined with next step or ignored then sometimes, all the infrstructure elements are not deployed in time and the website might not be published properly.**
+
 #### Website Files
 
 1. Download the website template files of your choices from a wide range of online websites. My recommendations are:
     * [Paid Interactive Websites](https://themeforest.net/)
     * [Free HTML5 Websites](https://html5up.net/)
 2. Update the downloaded website files with your personal information.
-3. Upload all files into `my_website` folder.
-4. As soon as the files are uploaded into the `my_website` folder, github will automatically update the files on AWS S3 bucket. You can check the progress in the actions tab of github
+3. Create a branch from `main` and name it `feature/website_deployment`.
+4. Commit / Upload all files into `my_website` folder and merge to main. This will trigger the pipeline to deploy your website.
 
 **Contributing**
 
