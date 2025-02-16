@@ -29,14 +29,18 @@ There are two types of costs involved in this project:
 | Certificate Manager   | € 0.00            | SSL Certificate for the website                    |
 | **Total**             | **€ 18.20**       | **Total cost per year**                            |
 
-## Pre-Requisites
+---
 
-This repository has four parts. I have explained each part below, so feel free to skip to whichever part you don't know about.
+## Project Structure: Set-Up and Deployment
+
+This repository has three sections. I have explained each sectio below, so feel free to skip to whichever part you don't know about.
 * ☁️ AWS Account Setup: An AWS account to deploy your website.
 * 🐙 GitHub Account Setup: A GitHub account to maintain all the files for this project.
 * 🎬 Deployments via Github Actions: There are two pipelines (infrastructure deployment and website deployment) which will automatically deploy everything for you.
     * 🛠️ Terraform configuration in `terraform` folder: This folder contains the AWS infrastructure configuration files. You do not have to change anything here as long as the secrets are stored properly on GitHub :)
     * 🌐 Website files in `my_website` folder: Stores all the required website files in this folder.
+
+---
 
 ### AWS Setup
 
@@ -44,21 +48,23 @@ This repository has four parts. I have explained each part below, so feel free t
 2. For your IAM User, generate access key and secret access key. **Save them in a safe place.**
     1. Go to security credentials tab
     ![alt text](images/image.png)
-    2. Scroll down and click on create access key
+    2. Scroll down and click on create access key. Please note the region here.
     ![alt text](images/image-1.png)
 3. Buy a domain name from AWS [Route53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar-tld-list.html). It will automatically create a Route53 hosted zone. You will require the `hosted_zone_id` and `domain_name` for the next steps.
 ![alt text](images/image-2.png)
-4. Create AWS S3 bucket for storing terraform backend state securely. Here two values are very important, the bucket name and the AWS region where this bucket is stored. We will assign these values to `BACKEND_BUCKET_NAME` and `BACKEND_BUCKET_REGION` in github. Select the region closest to your geographical location.
+4. Create AWS S3 bucket for storing terraform backend state securely. Here two values are very important, the **bucket name** and the **AWS region** where this bucket is stored. We will assign these values to `BACKEND_BUCKET_NAME` and `BACKEND_BUCKET_REGION` in github. Select the region closest to your geographical location.
     1. Select AWS region from drop-down
     ![alt text](images/image-4.png)
     2. Click Create bucket and assign a very unique bucket name. You could use `tfstate.<domain-name>` as bucket name.
     ![alt text](images/image-3.png)
     3. Enable bucket versioning and create the bucket.
 
+---
+
 ### GitHub Setup
 
 1. Create a GitHub account to maintain all the files for this project.
-2. Fork this [Repository](https://github.com/kraken24/personal-website-with-terraform) from GitHub and clone it locally.
+2. Fork this [repository](https://github.com/kraken24/personal-website-with-terraform) from GitHub and clone it locally.
 3. In the settings tab, go to `Secrets and variables` tab, click on `Actions` and add secrets.
 ![alt text](images/image-5.png)
 4. Add secret `Name`: `Secret`value as follows:
@@ -78,6 +84,8 @@ This repository has four parts. I have explained each part below, so feel free t
 | `AWS_SECRET_ACCESS_KEY`    | secret-access-key            | The secret access key for your IAM User.                      |
 | `AWS_REGION`               | eu-central-1                 | The default AWS region. I would recommend it to be same as the region where you create your bucket for storing website files.  |
 
+---
+
 ### Deployments
 
 1. `.github/workflows` folder contains two automation pipelines.
@@ -92,16 +100,24 @@ This repository has four parts. I have explained each part below, so feel free t
 1. Create a branch from `main` and name it `feature/terraform_deployment`.
 2. Create a dummy text file in `terraform` folder called `terraform_deployment.txt`
 3. Commit the file and merge to main. This will trigger the pipeline to setup the AWS infrastructure.
-4. ⚠️ **This step is necessary as the automation pipeline and terraform requires a few minutes to deploy everything on AWS. If this step is combined with next step or ignored then sometimes, all the infrstructure elements are not deployed in time and the website might not be published properly.**
+4. ⚠️ **This step is necessary as the automation pipeline and terraform requires a few minutes to deploy everything on AWS. If this step is combined with next step or ignored then sometimes, all the infrastructure elements are not deployed in time and the website might not be published properly.**
 
 #### Website Files
 
-1. Download the website template files of your choices from a wide range of online websites. My recommendations are:
+1. Create a branch from `main` and name it `feature/website_updation`.
+2. Download the website template files of your choices from a wide range of online websites. My recommendations are:
     * [Paid Interactive Websites](https://themeforest.net/)
     * [Free HTML5 Websites](https://html5up.net/)
-2. Update the downloaded website files with your personal information.
-3. Create a branch from `main` and name it `feature/website_deployment`.
+3. Update the downloaded website files with your personal information.
 4. Commit / Upload all files into `my_website` folder and merge to main. This will trigger the pipeline to deploy your website.
+
+---
+
+## Conclusion
+
+The above steps should deploy your personalised website on AWS.
+
+---
 
 **Contributing**
 
