@@ -1,9 +1,11 @@
-**Deploy your personal website on AWS in 5 mins for just €20 / year**
+**Effortlessly Deploy Your Personal Website on AWS with Terraform and GitHub Actions for Just €20/Year**
 =============================
 
 ## Introduction
 
-This repository provide a template to deploy an website on AWS in the most cost-effective and simple manner. Additionally, you have an opportunity to learn about Terraform & Infrastructure-as-Code, working with Github Actions, and how to deploy a website on AWS. Surprisingly, it costs as little as €20 / year to maintain your website.
+In today's digital landscape, establishing an online presence is essential, but concerns about complexity and cost often deter individuals from creating personal websites. What if you could deploy a professional website on Amazon Web Services (AWS) seamlessly, leveraging Infrastructure as Code (IaC) with Terraform and automating workflows through GitHub Actions—all for approximately €20 per year? This guide demystifies the process, providing a step-by-step tutorial to help you set up your website efficiently and cost-effectively.
+
+This repository provides you have an opportunity to learn about Terraform & Infrastructure-as-Code, working with Github Actions, and how to deploy a website on AWS.
 
 ## Architecture
 
@@ -116,8 +118,6 @@ This repository has three sections. I have explained each sectio below, so feel 
 ## Conclusion
 
 The above steps should deploy your personalised website on AWS.
-
----
 
 **Contributing**
 
